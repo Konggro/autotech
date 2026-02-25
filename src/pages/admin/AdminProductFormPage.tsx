@@ -16,7 +16,7 @@ import {
 import { Checkbox } from '../../components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '../../components/ui/radio-group';
 import { Upload, X, Plus } from 'lucide-react';
-import { useProducts } from '../../lib/use-products';
+import { refreshProducts, useProducts } from '../../lib/use-products';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export function AdminProductFormPage() {
@@ -34,11 +34,11 @@ export function AdminProductFormPage() {
     name: existingProduct?.name || '',
     brand: existingProduct?.brand || '',
     category: existingProduct?.category || '',
-    price: existingProduct?.price || 0,
-    salePrice: existingProduct?.salePrice || 0,
+    price: existingProduct?.price ? String(existingProduct.price) : '',
+    salePrice: existingProduct?.salePrice ? String(existingProduct.salePrice) : '',
     description: existingProduct?.description || '',
     stock: existingProduct?.stock || 'in-stock',
-    stockCount: existingProduct?.stockCount || 0,
+    stockCount: existingProduct?.stockCount ? String(existingProduct.stockCount) : '',
     featured: existingProduct?.featured || false,
     new: existingProduct?.new || false,
   });
@@ -58,11 +58,11 @@ export function AdminProductFormPage() {
       name: existingProduct.name || '',
       brand: existingProduct.brand || '',
       category: existingProduct.category || '',
-      price: existingProduct.price || 0,
-      salePrice: existingProduct.salePrice || 0,
+      price: existingProduct.price ? String(existingProduct.price) : '',
+      salePrice: existingProduct.salePrice ? String(existingProduct.salePrice) : '',
       description: existingProduct.description || '',
       stock: existingProduct.stock || 'in-stock',
-      stockCount: existingProduct.stockCount || 0,
+      stockCount: existingProduct.stockCount ? String(existingProduct.stockCount) : '',
       featured: existingProduct.featured || false,
       new: existingProduct.new || false,
     });
@@ -158,15 +158,38 @@ export function AdminProductFormPage() {
       return acc;
     }, {});
 
+    const parsedPrice = Number(formData.price);
+    if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
+      alert('Үнэ зөв оруулна уу (0-ээс их).');
+      return;
+    }
+
+    const parsedSalePrice =
+      formData.salePrice.trim() === '' ? null : Number(formData.salePrice);
+    if (
+      parsedSalePrice !== null &&
+      (!Number.isFinite(parsedSalePrice) || parsedSalePrice < 0)
+    ) {
+      alert('Хямдарсан үнэ зөв оруулна уу.');
+      return;
+    }
+
+    const parsedStockCount =
+      formData.stockCount.trim() === '' ? 0 : Number(formData.stockCount);
+    if (!Number.isFinite(parsedStockCount) || parsedStockCount < 0) {
+      alert('Тоо ширхэг зөв оруулна уу (0 эсвэл түүнээс их).');
+      return;
+    }
+
     const payload = {
       name: formData.name,
       brand: formData.brand,
       category: formData.category,
-      price: formData.price,
-      sale_price: formData.salePrice || null,
+      price: parsedPrice,
+      sale_price: parsedSalePrice,
       description: formData.description || null,
       stock: formData.stock,
-      stock_count: formData.stockCount || 0,
+      stock_count: parsedStockCount,
       featured: formData.featured,
       is_new: formData.new,
       specs: specsObject,
@@ -186,6 +209,7 @@ export function AdminProductFormPage() {
 
     alert('Бүтээгдэхүүн амжилттай хадгалагдлаа!');
     localStorage.removeItem(`product_draft_${id ?? 'new'}`);
+    await refreshProducts();
     navigate('/admin/products');
   };
 
@@ -394,7 +418,7 @@ export function AdminProductFormPage() {
                         required
                         value={formData.price}
                         onChange={(e) =>
-                          setFormData({ ...formData, price: Number(e.target.value) })
+                          setFormData({ ...formData, price: e.target.value })
                         }
                         className="mt-2 h-12 lg:h-14"
                       />
@@ -409,7 +433,7 @@ export function AdminProductFormPage() {
                         type="number"
                         value={formData.salePrice}
                         onChange={(e) =>
-                          setFormData({ ...formData, salePrice: Number(e.target.value) })
+                          setFormData({ ...formData, salePrice: e.target.value })
                         }
                         placeholder="Хямдралтай бол"
                         className="mt-2 h-12 lg:h-14"
@@ -505,7 +529,7 @@ export function AdminProductFormPage() {
                         type="number"
                         value={formData.stockCount}
                         onChange={(e) =>
-                          setFormData({ ...formData, stockCount: Number(e.target.value) })
+                          setFormData({ ...formData, stockCount: e.target.value })
                         }
                         className="mt-2 h-12 lg:h-14"
                       />

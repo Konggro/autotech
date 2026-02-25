@@ -23,6 +23,20 @@ async function loadProductsShared() {
   return inFlightRequest;
 }
 
+export async function refreshProducts() {
+  inFlightRequest = fetchProducts()
+    .then((products) => {
+      productsCache = products;
+      subscribers.forEach((notify) => notify(products));
+      return products;
+    })
+    .finally(() => {
+      inFlightRequest = null;
+    });
+
+  return inFlightRequest;
+}
+
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>(productsCache ?? []);
   const [loading, setLoading] = useState(!productsCache);
