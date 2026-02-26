@@ -18,11 +18,11 @@ export function Footer() {
             <div className="space-y-2 text-sm text-[#E5E7EB]">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <span>Ulaanbaatar, Mongolia</span>
+                <span>Улаанбаатар, Монгол</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                <span>+976 7777 7777</span>
+                <span>97080808</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
@@ -81,22 +81,6 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  to="/products/brake-parts"
-                  className="transition-colors hover:text-white"
-                >
-                  Тоормосны эд анги
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products/suspension"
-                  className="transition-colors hover:text-white"
-                >
-                  Түдгэлзүүлэлт
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/products/accessories"
                   className="transition-colors hover:text-white"
                 >
@@ -118,14 +102,13 @@ export function Footer() {
           <div>
             <h3 className="mb-3 text-sm font-semibold md:mb-4 md:text-base">Холбоо барих</h3>
             <ul className="space-y-2 text-sm text-[#E5E7EB]">
-              <li>Утас: +976 7777 7777</li>
+              <li>Утас: 97080808</li>
               <li>Имэйл: info@autotech.mn</li>
               <li>Хаяг: Улаанбаатар, Монгол</li>
               <li className="pt-2">
                 <div className="font-medium text-white">Ажлын цаг:</div>
-                <div>Даваа-Баасан: 9:00 - 18:00</div>
-                <div>Бямба: 10:00 - 16:00</div>
-                <div>Ням: Амарна</div>
+                <div>Даваа: Амарна</div>
+                <div>Мягмар - Ням: 10:00 - 18:00</div>
               </li>
             </ul>
           </div>
